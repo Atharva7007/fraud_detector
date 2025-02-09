@@ -71,7 +71,7 @@ async def check_fraud(email: EmailRequest):
         end = text.rfind("}") + 1
         json_string = text[start:end]
         result = json.loads(json_string)
-        result["confidence"].replace("%", "")
+        result["confidence"] = int(str(result["confidence"]).replace("%", ""))
     except json.JSONDecodeError:
         result = {"reason": "Invalid response from Gemini API", "confidence": 0}
     

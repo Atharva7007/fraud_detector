@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div className="app-container">
       <Header />
-      {/* <SplashCursor/> */}
+      <SplashCursor/>
       {/* <NavBar/> */}
       <main className="content-wrap">
         <Routes>

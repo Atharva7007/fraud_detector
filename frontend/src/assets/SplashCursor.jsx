@@ -3,19 +3,19 @@ import { useEffect, useRef } from 'react';
 
 function SplashCursor({
   // You can customize these props if you want
-  SIM_RESOLUTION = 128,
-  DYE_RESOLUTION = 1440,
-  CAPTURE_RESOLUTION = 512,
-  DENSITY_DISSIPATION = 3.5,
-  VELOCITY_DISSIPATION = 2,
-  PRESSURE = 0.1,
-  PRESSURE_ITERATIONS = 20,
-  CURL = 3,
-  SPLAT_RADIUS = 0.2,
-  SPLAT_FORCE = 6000,
+  SIM_RESOLUTION = 64,  // Lower resolution for smaller effects
+  DYE_RESOLUTION = 720, // Reduced for less intensity
+  CAPTURE_RESOLUTION = 256, // Smaller capture area
+  DENSITY_DISSIPATION = 4, // Slightly increased for quicker fade-out
+  VELOCITY_DISSIPATION = 2.5, // More dissipation to keep it subtle
+  PRESSURE = 0.08, 
+  PRESSURE_ITERATIONS = 15, // Reduced for efficiency
+  CURL = 2, // Softer curls
+  SPLAT_RADIUS = 0.1, // Smaller splat size
+  SPLAT_FORCE = 3000, // Lower force for a gentler effect
   SHADING = true,
-  COLOR_UPDATE_SPEED = 10,
-  BACK_COLOR = { r: 0.5, g: 0, b: 0 },
+  COLOR_UPDATE_SPEED = 5, // Slower transitions
+  BACK_COLOR = { r: 0.3, g: 0, b: 0.6 }, // Darker purple
   TRANSPARENT = true
 }) {
   const canvasRef = useRef(null);
