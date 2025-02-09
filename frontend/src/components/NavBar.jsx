@@ -1,12 +1,22 @@
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
+import ShieldLogo from '../assets/Shield_Logo.png'; // Adjust the path as needed
 
 export default function NavBar() {
   const location = useLocation();
 
   return (
-    <AppBar position="sticky" sx={{ background: 'transparent', boxShadow: 'none' }}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
+    <AppBar position="sticky" sx={{ background: 'transparent', boxShadow: 'none', marginTop: '10px' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+        {/* Logo on the top left, positioned absolutely to avoid shifting center content */}
+        <Box
+          component="img"
+          src={ShieldLogo}
+          alt="Shield Logo"
+          sx={{ height: 150, position: 'absolute', left: 16 }}
+        />
+
+        {/* Centered Buttons */}
         <Box sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -16,7 +26,6 @@ export default function NavBar() {
           borderRadius: '24px',
           boxShadow: '0 4px 10px rgba(0, 0, 0, 0.9)',
           width: 'fit-content',
-          margin: '10px auto',
         }}>
           <Button 
             component={Link} 
@@ -30,7 +39,7 @@ export default function NavBar() {
           >
             Home
           </Button>
-          {location.pathname === "/report" ? (
+          {location.pathname === "/Report" ? (
             <Button 
               component={Link} 
               to="/CheckFraud"
@@ -46,7 +55,7 @@ export default function NavBar() {
           ) : (
             <Button 
               component={Link} 
-              to="/report"
+              to="/Report"
               sx={{ 
                 color: 'black',
                 fontWeight: 600,

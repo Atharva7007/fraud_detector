@@ -1,5 +1,6 @@
-import { Container, Typography, Button, Card, CardContent, Stack } from '@mui/material';
+import { Container, Typography, Button, Card, CardContent, Stack, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import ShieldLogo from '../assets/Shield_Logo.png'; // Ensure the path is correct
 import BlurText from '../assets/BlurText';
 
 export default function Home() {
@@ -16,9 +17,25 @@ export default function Home() {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      background: 'linear-gradient(to bottom right, #000000, #4b0082)'
+      background: 'linear-gradient(to bottom right, #000000, #4b0082)',
+      position: 'relative' // This is necessary for absolute positioning of logos
     }}>
-      <Container maxWidth="sm" sx={{ textAlign: 'center' }}>
+      
+      {/* Centered Shield Logo */}
+      <Box
+        component="img"
+        src={ShieldLogo}
+        alt="Shield Logo"
+        sx={{
+          height: 180,
+          position: 'absolute',
+          top: '5%',
+          transform: 'scaleX(-1)', // Optionally flip the logo for variety
+          boxShadow: '0 4px 10px rgba(0,0,0,0.5)', // Reflection-like shadow
+        }}
+      />
+
+      <Container maxWidth="sm" sx={{ textAlign: 'center', position: 'relative' }}>
         <Typography variant="h2" sx={{
           fontWeight: 700,
           color: 'white',
@@ -26,7 +43,7 @@ export default function Home() {
         }}>
           Fraud Shield
         </Typography>
-        
+
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} justifyContent="center">
           <Card sx={{
             width: 300,
@@ -60,7 +77,7 @@ export default function Home() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card sx={{
             width: 300,
             textAlign: 'center',
@@ -94,17 +111,18 @@ export default function Home() {
             </CardContent>
           </Card>
         </Stack>
-        <br>
-        </br>
-        <i style={{color:"white", fontSize:"20px"}}>
-        <BlurText
-          text="Fraud never sleeps, but neither do we—scan, detect, and shield in seconds!"
-          delay={150}
-          animateBy="words"
-          direction="top"
-          onAnimationComplete={handleAnimationComplete}
-          className="text-2xl mb-8"
-        />
+
+        <br />
+
+        <i style={{ color: "white", fontSize: "20px" }}>
+          <BlurText
+            text="Fraud never sleeps, but neither do we—scan, detect, and shield in seconds!"
+            delay={150}
+            animateBy="words"
+            direction="top"
+            onAnimationComplete={handleAnimationComplete}
+            className="text-2xl mb-8"
+          />
         </i>
       </Container>
     </div>
