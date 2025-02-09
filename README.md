@@ -1,12 +1,15 @@
-<<<<<<< HEAD
-# fraud-detection
-=======
-# React + Vite
+# Fraud Detection App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
+The Fraud Detection App is a web-based RAG (Retrieval-augmented generation) application designed to identify and classify fraudulent messages. The application uses a combination of machine learning models and keyword-based analysis to detect and flag messages related to phishing and financial fraud.
 
-Currently, two official plugins are available:
+## Features
+- **Fraudulent Message Detection**: Classify messages as 'fraudulent' or 'legitimate'.
+- **Phishing and Financial Fraud Identification**: The app identifies fraud through keyword matching and uses Gemini API for more advanced analysis.
+- **User-friendly Interface**: Provides an easy-to-navigate web interface for users to report and check fraud.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
->>>>>>> fraud-detection
+## Tech Stack
+- **Frontend**: React, Material UI
+- **Backend**: FastAPI
+- **Machine Learning**: Gemini API, Cosine Similarity and Vector Search
+- **Database**: MongoDB Atlas (for storing messages and related data)
