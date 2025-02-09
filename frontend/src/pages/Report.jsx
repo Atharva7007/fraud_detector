@@ -79,7 +79,7 @@ export default function Report() {
             variant="outlined"
             value={reportText}
             onChange={(e) => setReportText(e.target.value)}
-            placeholder="Provide detailed information about the fraudulent activity..."
+            placeholder="Provide the fraudulent message you received"
             sx={{
               mb: 3,
               '& .MuiOutlinedInput-root': {
