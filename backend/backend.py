@@ -28,10 +28,12 @@ app.add_middleware(
 client = get_mongo_client()
 db = client.get_database("fraud_detection")
 emails_collection = db.get_collection("text_embeddings")
+email_id_collection = db.get_collection("email_ids")
 
 # Pydantic model for incoming requests
 class EmailRequest(BaseModel):
     text: str
+    email_id: str
 
 # Function to calculate cosine similarity
 def get_similarity(input_text, stored_embedding):
@@ -43,6 +45,7 @@ def get_similarity(input_text, stored_embedding):
 @app.post("/check_fraud/")
 async def check_fraud(email: EmailRequest):
     input_text = email.text
+    input_email_id = email.email_id
     input_embedding = get_bert_embedding(input_text).tolist()  # Get embedding for input text
 
     # Perform vector search using MongoDB Atlas
@@ -53,7 +56,7 @@ async def check_fraud(email: EmailRequest):
                 "path": "embedding",  # Field containing the embeddings
                 "queryVector": input_embedding,  # Embedding of the input text
                 "numCandidates": 100,  # Number of candidates to consider
-                "limit": 5  # Increase limit to ensure enough candidates are retrieved
+                "limit": 3  # Increase limit to ensure enough candidates are retrieved
             }
         },
         {
@@ -68,15 +71,23 @@ async def check_fraud(email: EmailRequest):
     relevant_emails = list(emails_collection.aggregate(pipeline))
 
     # Filter results with cosine similarity > 0.9
-    filtered_emails = [email for email in relevant_emails if email["score"] > 0.9]
+    filtered_emails = [email for email in relevant_emails if email["score"] > 0.95]
 
+    known_fraud_email_id = "Not Found"
+    if len(input_email_id) > 0:
+        email_ids = email_id_collection.find()
+        for email_id in email_ids:
+            print(email_id, input_email_id)
+            if email_id["email_id"] == input_email_id:
+                known_fraud_email_id = email_id["email_id"]
+                break
 
     # Extract the text of the filtered emails
     relevant_texts = [email["text"] for email in filtered_emails]
-    print(relevant_texts)
+    
     # Construct the prompt for Gemini API
-    prompt = f"User Input: {input_text} Known Fraud Cases: {relevant_texts}\n\nDoes this look suspicious? Also give a confidence percentage where confidence represents the chance that this is fraudulent text. Your answer should be in JSON format without any additional characters with the fields text:<your response of less than 5 sentences> and confidence:<percentage value>"
-
+    prompt = f"Sent From: {input_email_id} User Input: {input_text} Known Fraud Cases: {relevant_texts} Known Fraudulent Ids: {known_fraud_email_id}\n\nDoes this look suspicious? Also give a confidence percentage where confidence represents the chance that this is fraudulent text. Your answer should be in JSON format without any additional characters with the fields text:<your response of less than 5 sentences> and confidence:<percentage value>"
+    print(prompt)
     # Generate content with Gemini API
     response = gemini_client.models.generate_content(
         model="gemini-1.5-flash",  # Specify the model version
@@ -111,6 +122,9 @@ async def report_fraud(email: EmailRequest):
 
     new_entry = {"index": new_index, "text": email.text, "embedding": embedding.tolist()}
     result = emails_collection.insert_one(new_entry)
+
+    new_email_id = {"email_id" : email.email_id}
+    email_id_collection.insert_one(new_email_id)
 
     return {"message": "Fraud reported successfully", "inserted_id": str(result.inserted_id), "index":new_index}
 

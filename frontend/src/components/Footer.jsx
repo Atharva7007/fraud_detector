@@ -27,7 +27,7 @@ export default function Footer() {
         <img 
           src={HACKNC} 
           alt="HACKNC Logo" 
-          style={{ width: '69px', height: '69px', verticalAlign: 'middle', marginLeft: '5px' }}
+          style={{ width: 'px', height: '69px', verticalAlign: 'middle', marginLeft: '5px' }}
         />
         </Typography>
       </Toolbar>

@@ -25,7 +25,7 @@ const [formData, setFormData] = useState({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ text: formData.content }), // Send the content to the backend
+        body: JSON.stringify({ text: formData.content, email_id: formData.email }), // Send the content to the backend
       });
 
       if (!response.ok) {
