@@ -53,7 +53,7 @@ async def check_fraud(email: EmailRequest):
                 "path": "embedding",  # Field containing the embeddings
                 "queryVector": input_embedding,  # Embedding of the input text
                 "numCandidates": 100,  # Number of candidates to consider
-                "limit": 3  # Increase limit to ensure enough candidates are retrieved
+                "limit": 5  # Increase limit to ensure enough candidates are retrieved
             }
         },
         {
