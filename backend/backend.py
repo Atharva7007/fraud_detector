@@ -42,28 +42,47 @@ def get_similarity(input_text, stored_embedding):
 
 @app.post("/check_fraud/")
 async def check_fraud(email: EmailRequest):
-    # Search the database for similar emails
     input_text = email.text
-    emails = emails_collection.find()
-    relevant_emails = []
-    # Compare with stored embeddings
-    for stored_email in emails:
-        stored_embedding = np.array(stored_email["embedding"])
-        similarity = get_similarity(input_text, stored_embedding)
-        
-        # Define a threshold for phishing email detection
-        if similarity > 0.9:  # You can adjust this threshold
-            relevant_emails.append(stored_email["text"])
-        if len(relevant_emails) == 5:
-            break
-    
-    prompt = f"User Input: {input_text} Relevant Fraud Cases: {relevant_emails}\n\nDoes this look suspicious? Also give a confidence percentage where confidence represent chance that this is fraudulent text. Your answer should be in JSON format without any additional characters with the fields text:<your response of less than 5 sentences> and confidence:<percentage value>"
-    # Generate content with Gemini API, passing the constructed prompt
+    input_embedding = get_bert_embedding(input_text).tolist()  # Get embedding for input text
+
+    # Perform vector search using MongoDB Atlas
+    pipeline = [
+        {
+            "$vectorSearch": {
+                "index": "vector_search_index",  # Name of the vector search index
+                "path": "embedding",  # Field containing the embeddings
+                "queryVector": input_embedding,  # Embedding of the input text
+                "numCandidates": 100,  # Number of candidates to consider
+                "limit": 5  # Increase limit to ensure enough candidates are retrieved
+            }
+        },
+        {
+            "$project": {
+                "text": 1,  # Include the text field
+                "score": { "$meta": "vectorSearchScore" }  # Include the similarity score
+            }
+        }
+    ]
+
+    # Execute the aggregation pipeline
+    relevant_emails = list(emails_collection.aggregate(pipeline))
+
+    # Filter results with cosine similarity > 0.9
+    filtered_emails = [email for email in relevant_emails if email["score"] > 0.9]
+
+
+    # Extract the text of the filtered emails
+    relevant_texts = [email["text"] for email in filtered_emails]
+    print(relevant_texts)
+    # Construct the prompt for Gemini API
+    prompt = f"User Input: {input_text} Known Fraud Cases: {relevant_texts}\n\nDoes this look suspicious? Also give a confidence percentage where confidence represents the chance that this is fraudulent text. Your answer should be in JSON format without any additional characters with the fields text:<your response of less than 5 sentences> and confidence:<percentage value>"
+
+    # Generate content with Gemini API
     response = gemini_client.models.generate_content(
-        model="gemini-1.5-flash",  # Specify the model version (Gemini 1.5 Flash)
-        contents=prompt,  # Send the constructed prompt to the model
+        model="gemini-1.5-flash",  # Specify the model version
+        contents=prompt  # Send the constructed prompt to the model
     )
-    
+
     # Parse the response text as JSON
     try:
         text = response.text
@@ -74,7 +93,7 @@ async def check_fraud(email: EmailRequest):
         result["confidence"] = int(str(result["confidence"]).replace("%", ""))
     except json.JSONDecodeError:
         result = {"reason": "Invalid response from Gemini API", "confidence": 0}
-    
+
     # Return the result as JSON
     return result
 
