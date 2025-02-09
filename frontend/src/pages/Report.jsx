@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Container, TextField, Button, Typography, CircularProgress } from '@mui/material';
+import NavBar from '../components/NavBar';
 
 export default function Report() {
   const [reportText, setReportText] = useState('');
@@ -33,6 +34,8 @@ export default function Report() {
   };
 
   return (
+    <>
+    <NavBar/>
     <Container maxWidth="md" sx={{ py: 4 }}>
       <div style={{
         backgroundColor: 'rgba(255,255,255,0.9)',
@@ -91,6 +94,6 @@ export default function Report() {
           {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Submit Report'}
         </Button>
       </div>
-    </Container>
+    </Container></>
   );
 }

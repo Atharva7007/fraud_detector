@@ -1,13 +1,11 @@
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function NavBar() {
+  const location = useLocation();
+
   return (
-    <AppBar position="sticky" sx={{ 
-      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-      py: 1
-    }}>
+    <AppBar position="sticky" sx={{ background: 'transparent', boxShadow: 'none' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box sx={{
           display: 'flex',
@@ -24,7 +22,7 @@ export default function NavBar() {
             component={Link} 
             to="/"
             sx={{ 
-              color: 'white',
+              color: 'black',
               fontWeight: 600,
               mx: 1.5,
               '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
@@ -32,18 +30,33 @@ export default function NavBar() {
           >
             Home
           </Button>
-          <Button 
-            component={Link} 
-            to="/report"
-            sx={{ 
-              color: 'white',
-              fontWeight: 600,
-              mx: 1.5,
-              '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
-            }}
-          >
-            Report
-          </Button>
+          {location.pathname === "/report" ? (
+            <Button 
+              component={Link} 
+              to="/CheckFraud"
+              sx={{ 
+                color: 'black',
+                fontWeight: 600,
+                mx: 1.5,
+                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
+              }}
+            >
+              CheckFraud
+            </Button>
+          ) : (
+            <Button 
+              component={Link} 
+              to="/report"
+              sx={{ 
+                color: 'black',
+                fontWeight: 600,
+                mx: 1.5,
+                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
+              }}
+            >
+              Report
+            </Button>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
