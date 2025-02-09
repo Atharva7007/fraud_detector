@@ -7,11 +7,29 @@ export default function Report() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setLoading(false);
-    alert('Report submitted successfully!');
-    setReportText('');
+  
+    try {
+      const response = await fetch('http://localhost:8000/report_fraud/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: reportText }), // Send the email text to the backend
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit report');
+      }
+  
+      const data = await response.json();
+      alert(data.message); // Show success message from the backend
+      setReportText(''); // Clear the input field
+    } catch (error) {
+      console.error('Error submitting report:', error);
+      alert('Failed to submit report. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

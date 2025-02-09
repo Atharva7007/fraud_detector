@@ -16,21 +16,29 @@ export default function Home() {
     setError(null);
 
     try {
-      // Simulate API call
-      const response = await new Promise((resolve) => 
-        setTimeout(() => resolve({
-          reason: "The message is a phishing attempt, imitating a Netflix payment failure to steal banking information via a malicious link.",
-          confidence_score: 95
-        }), 2000)
-      );
+      // Make API call to the backend
+      const response = await fetch('http://localhost:8000/check_fraud/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: formData.content }), // Send the content to the backend
+      });
 
-      setResult(response);
+      if (!response.ok) {
+        throw new Error('Failed to analyze content');
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setResult(data);
     } catch (err) {
       setError('An error occurred while analyzing the content');
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleReset = () => {
     setResult(null);
@@ -147,14 +155,14 @@ export default function Home() {
                   overflow: 'hidden'
                 }}>
                   <Box sx={{
-                    width: `${result.confidence_score}%`,
+                    width: `${result.confidence}%`,
                     height: '100%',
                     background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
                     borderRadius: '5px'
                   }} />
                 </Box>
                 <Typography variant="body2" sx={{ mt: 1, color: '#64748b' }}>
-                  {result.confidence_score}% confidence
+                 {result.confidence}% confidence
                 </Typography>
               </Box>
 
@@ -168,7 +176,7 @@ export default function Home() {
                   borderRadius: '8px',
                   border: '1px solid #e2e8f0'
                 }}>
-                  {result.reason}
+                  {result.text}
                 </Typography>
               </Box>
             </Box>
