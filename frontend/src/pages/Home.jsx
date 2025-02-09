@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Container, TextField, Button, Typography, Stack, CircularProgress, Alert, Box } from '@mui/material';
+import AnimatedContent from '../assets/AnimatedContent';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ export default function Home() {
       const response = await new Promise((resolve) => 
         setTimeout(() => resolve({
           reason: "The message is a phishing attempt, imitating a Netflix payment failure to steal banking information via a malicious link.",
-          confidence_score: 95
+          confidence_score: 65
         }), 2000)
       );
 
@@ -38,8 +39,15 @@ export default function Home() {
   };
 
   return (
-    <div>
-    <Container maxWidth="md" className="gradient-bg" sx={{ py: 4 }}>
+    <div style={{
+      width: '100%', // Take up full width of parent
+      height: '80vh', // Take up full height of parent
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      background: 'linear-gradient(to bottom right, #000000, #4b0082)'
+    }}>
+    <Container maxWidth="md" maxHeight="md" className="gradient-bg" sx={{ py: 4}}>
       <Stack spacing={3} sx={{
         bgcolor: 'rgba(255,255,255,0.9)',
         borderRadius: 4,
@@ -56,7 +64,7 @@ export default function Home() {
           WebkitTextFillColor: 'transparent',
           mb: 3
         }}>
-          Fraud Detection
+          Fraud Shield
         </Typography>
 
         {!result ? (
@@ -125,38 +133,42 @@ export default function Home() {
           </>
         ) : (
           <>
-            <Box sx={{
+            {/* <Box sx={{
               p: 3,
               borderRadius: '12px',
               background: 'rgba(255,255,255,0.9)',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}>
+            }}> */}
               <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
                 Analysis Results
               </Typography>
               
               <Box sx={{ mb: 3 }}>
-                <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
-                  Confidence Score:
-                </Typography>
+              <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+                Confidence Score:
+              </Typography>
+              <Box sx={{
+                width: '100%',
+                height: '10px',
+                bgcolor: '#e0e7ff',
+                borderRadius: '5px',
+                overflow: 'hidden'
+              }}>
                 <Box sx={{
-                  width: '100%',
-                  height: '10px',
-                  bgcolor: '#e0e7ff',
-                  borderRadius: '5px',
-                  overflow: 'hidden'
-                }}>
-                  <Box sx={{
-                    width: `${result.confidence_score}%`,
-                    height: '100%',
-                    background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
-                    borderRadius: '5px'
-                  }} />
-                </Box>
-                <Typography variant="body2" sx={{ mt: 1, color: '#64748b' }}>
-                  {result.confidence_score}% confidence
-                </Typography>
+                  width: `${result.confidence_score}%`,
+                  height: '100%',
+                  background: 
+                    result.confidence_score <= 30 ? '#4caf50' : // Green
+                    result.confidence_score <= 50 ? '#ffeb3b' : // Yellow
+                    result.confidence_score <= 70 ? '#ff9800' : // Orange
+                    '#f44336', // Red
+                  borderRadius: '5px'
+                }} />
               </Box>
+              <Typography variant="body2" sx={{ mt: 1, color: '#64748b' }}>
+                {result.confidence_score}% confidence
+              </Typography>
+            </Box>
 
               <Box>
                 <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
@@ -171,7 +183,7 @@ export default function Home() {
                   {result.reason}
                 </Typography>
               </Box>
-            </Box>
+            {/* </Box> */}
 
             <Button
               variant="outlined"

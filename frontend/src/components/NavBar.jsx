@@ -1,61 +1,51 @@
-import React, { useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { AppBar, Toolbar, Button, Box } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default function NavBar() {
-  const [selected, setSelected] = useState("home"); // Track active option
-
-  const handleSelection = (option) => {
-    setSelected(option);
-  };
-
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: 'rgba(255, 255, 255, 0.8)',
-        padding: '8px 16px',
-        borderRadius: '24px',
-        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.9)',
-        width: 'fit-content',
-        margin: '10px auto',
-      }}
-    >
-      <Button
-        onClick={() => handleSelection("home")}
-        sx={{
-          backgroundColor: selected === "home" ? "#6366f1" : "transparent",
-          color: selected === "home" ? "white" : "#6366f1",
-          fontWeight: 600,
-          borderRadius: '50%',
-          minWidth: '56px',
-          height: '56px',
-          margin: '0 8px',
-          '&:hover': {
-            backgroundColor: selected === "home" ? "#4f46e5" : "rgba(99, 102, 241, 0.1)",
-          },
-        }}
-      >
-        Home
-      </Button>
-      <Button
-        onClick={() => handleSelection("report")}
-        sx={{
-          backgroundColor: selected === "report" ? "#6366f1" : "transparent",
-          color: selected === "report" ? "white" : "#6366f1",
-          fontWeight: 600,
-          borderRadius: '50%',
-          minWidth: '56px',
-          height: '56px',
-          margin: '0 8px',
-          '&:hover': {
-            backgroundColor: selected === "report" ? "#4f46e5" : "rgba(99, 102, 241, 0.1)",
-          },
-        }}
-      >
-        Report
-      </Button>
-    </Box>
+    <AppBar position="sticky" sx={{ 
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+      py: 1
+    }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'rgba(255, 255, 255, 0.8)',
+          padding: '8px 16px',
+          borderRadius: '24px',
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.9)',
+          width: 'fit-content',
+          margin: '10px auto',
+        }}>
+          <Button 
+            component={Link} 
+            to="/"
+            sx={{ 
+              color: 'white',
+              fontWeight: 600,
+              mx: 1.5,
+              '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
+            }}
+          >
+            Home
+          </Button>
+          <Button 
+            component={Link} 
+            to="/report"
+            sx={{ 
+              color: 'white',
+              fontWeight: 600,
+              mx: 1.5,
+              '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' }
+            }}
+          >
+            Report
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }
