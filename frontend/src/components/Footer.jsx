@@ -1,6 +1,7 @@
 // Footer.jsx
 import React from 'react';
 import { AppBar, Toolbar, Typography } from '@mui/material';
+import HACKNC from '../assets/Hack_NCState_Logo.png'
 
 export default function Footer() {
   return (
@@ -22,7 +23,12 @@ export default function Footer() {
             fontWeight: 600,
           }}
         >
-          © 2025 FraudShield. All rights reserved.
+          © Made with <span style={{ fontSize: '20px', color: 'red' }}>❤️</span> for{' '}
+        <img 
+          src={HACKNC} 
+          alt="HACKNC Logo" 
+          style={{ width: '69px', height: '69px', verticalAlign: 'middle', marginLeft: '5px' }}
+        />
         </Typography>
       </Toolbar>
     </AppBar>
