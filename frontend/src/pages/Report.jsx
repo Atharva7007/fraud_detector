@@ -59,7 +59,7 @@ export default function Report() {
 
           <TextField
             fullWidth
-            label="Your Email"
+            label="Fruadulent Email"
             variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

@@ -86,8 +86,10 @@ async def check_fraud(email: EmailRequest):
     relevant_texts = [email["text"] for email in filtered_emails]
     
     # Construct the prompt for Gemini API
+    if not input_email_id:
+        input_email_id = "N/A"
     prompt = f"Sent From: {input_email_id} User Input: {input_text} Known Fraud Cases: {relevant_texts} Known Fraudulent Ids: {known_fraud_email_id}\n\nDoes this look suspicious? Also give a confidence percentage where confidence represents the chance that this is fraudulent text. Your answer should be in JSON format without any additional characters with the fields text:<your response of less than 5 sentences> and confidence:<percentage value>"
-    print(prompt)
+    
     # Generate content with Gemini API
     response = gemini_client.models.generate_content(
         model="gemini-1.5-flash",  # Specify the model version

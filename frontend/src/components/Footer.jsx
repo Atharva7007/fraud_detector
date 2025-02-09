@@ -23,7 +23,7 @@ export default function Footer() {
             fontWeight: 600,
           }}
         >
-          © Made with <span style={{ fontSize: '20px', color: 'red' }}>❤️</span> for{' '}
+          © Made with <span style={{ fontSize: '20px', color: 'red' }}>❤️</span> at {' '}
         <img 
           src={HACKNC} 
           alt="HACKNC Logo" 

@@ -178,7 +178,7 @@ const [formData, setFormData] = useState({
                 }} />
               </Box>
               <Typography variant="body2" sx={{ mt: 1, color: '#64748b' }}>
-                {result.confidence}% confidence
+                Chance Of Fraud/Scam: {result.confidence}% 
               </Typography>
             </Box>
 
