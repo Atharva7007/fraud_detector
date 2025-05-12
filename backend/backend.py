@@ -6,13 +6,10 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from google import genai
 from db import get_mongo_client
 from utils import get_bert_embedding
+from ollama_utils import get_ollama_response
 import json
-
-# Initialize the Gemini client with the API key (replace with your actual API key)
-gemini_client = genai.Client(api_key="AIzaSyDDILFwFz1Hl1PzRzYZH9uOgPrrgefnTec")
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -46,7 +43,7 @@ def get_similarity(input_text, stored_embedding):
 async def check_fraud(email: EmailRequest):
     input_text = email.text
     input_email_id = email.email_id
-    input_embedding = get_bert_embedding(input_text).tolist()  # Get embedding for input text
+    input_embedding = get_bert_embedding(input_text).tolist()
 
     # Perform vector search using MongoDB Atlas
     pipeline = [
@@ -85,29 +82,44 @@ async def check_fraud(email: EmailRequest):
     # Extract the text of the filtered emails
     relevant_texts = [email["text"] for email in filtered_emails]
     
-    # Construct the prompt for Gemini API
+    # Construct the prompt for Ollama
     if not input_email_id:
         input_email_id = "N/A"
-    prompt = f"Sent From: {input_email_id} User Input: {input_text} Known Fraud Cases: {relevant_texts} Known Fraudulent Ids: {known_fraud_email_id}\n\nDoes this look suspicious? Also give a confidence percentage where confidence represents the chance that this is fraudulent text. Your answer should be in JSON format without any additional characters with the fields text:<your response of less than 5 sentences> and confidence:<percentage value>"
-    
-    # Generate content with Gemini API
-    response = gemini_client.models.generate_content(
-        model="gemini-1.5-flash",  # Specify the model version
-        contents=prompt  # Send the constructed prompt to the model
-    )
+    prompt = f"""You are a fraud detection expert. Analyze the following message and determine if it's suspicious or fraudulent.
 
+Message Details:
+- From: {input_email_id}
+- Content: {input_text}
+
+Known Fraud Cases for Reference:
+{relevant_texts}
+
+Known Fraudulent IDs:
+{known_fraud_email_id}
+
+Please analyze this message and provide your assessment in JSON format with two fields:
+1. text: A brief explanation (less than 5 sentences) of why this might be fraudulent or legitimate
+2. confidence: A percentage (0-100) indicating how confident you are in your assessment
+
+Format your response as a valid JSON object with no additional text."""
+    
+    # Get response from Ollama
+    response_text = get_ollama_response(prompt)
+    
     # Parse the response text as JSON
     try:
-        text = response.text
-        start = text.find("{")
-        end = text.rfind("}") + 1
-        json_string = text[start:end]
+        # Find JSON in the response
+        start = response_text.find("{")
+        end = response_text.rfind("}") + 1
+        json_string = response_text[start:end]
         result = json.loads(json_string)
-        result["confidence"] = int(str(result["confidence"]).replace("%", ""))
-    except json.JSONDecodeError:
-        result = {"reason": "Invalid response from Gemini API", "confidence": 0}
+        
+        # Ensure confidence is a number
+        if isinstance(result.get("confidence"), str):
+            result["confidence"] = int(str(result["confidence"]).replace("%", ""))
+    except (json.JSONDecodeError, AttributeError) as e:
+        result = {"text": "Error analyzing message", "confidence": 0}
 
-    # Return the result as JSON
     return result
 
 # We will add the user's reported fraudulent email/text to our dataset 
