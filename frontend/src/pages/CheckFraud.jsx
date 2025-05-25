@@ -21,6 +21,7 @@ export default function CheckFraud() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  var rate_limit_hit = false;
 
   const handleCheck = async () => {
     setLoading(true);
@@ -42,6 +43,12 @@ export default function CheckFraud() {
         }
       );
 
+      // Check for rate limit status codes first
+      if (response.status === 429 || response.status === 503) {
+        rate_limit_hit = true;
+        throw new Error("Rate limit hit");
+      }
+
       if (!response.ok) {
         throw new Error("Failed to analyze content");
       }
@@ -49,7 +56,14 @@ export default function CheckFraud() {
       const data = await response.json();
       setResult(data);
     } catch (err) {
-      setError("An error occurred while analyzing the content");
+      if (rate_limit_hit) {
+        setError(
+          "You're sending requests too quickly—please wait a moment and try again."
+        );
+        rate_limit_hit = false;
+      } else {
+        setError("An error occurred while analyzing the content");
+      }
     } finally {
       setLoading(false);
     }

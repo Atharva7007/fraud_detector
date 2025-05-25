@@ -74,7 +74,7 @@ async def check_fraud(email: EmailRequest):
     if len(input_email_id) > 0:
         email_ids = email_id_collection.find()
         for email_id in email_ids:
-            print(email_id, input_email_id)
+            # print(email_id, input_email_id)
             if email_id["email_id"] == input_email_id:
                 known_fraud_email_id = email_id["email_id"]
                 break
