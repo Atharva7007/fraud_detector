@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
+# import numpy as np
+# from sklearn.metrics.pairwise import cosine_similarity
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from db import get_mongo_client
@@ -33,11 +33,11 @@ class EmailRequest(BaseModel):
     email_id: str
 
 # Function to calculate cosine similarity
-def get_similarity(input_text, stored_embedding):
-    # Convert input text to embedding (same method used during storage)
-    input_embedding = get_bert_embedding(input_text)  # Assuming you have the get_bert_embeddings function
-    similarity = cosine_similarity([input_embedding], [stored_embedding])
-    return similarity[0][0]
+# def get_similarity(input_text, stored_embedding):
+#     # Convert input text to embedding (same method used during storage)
+#     input_embedding = get_bert_embedding(input_text)  # Assuming you have the get_bert_embeddings function
+#     similarity = cosine_similarity([input_embedding], [stored_embedding])
+#     return similarity[0][0]
 
 @app.post("/check_fraud/")
 async def check_fraud(email: EmailRequest):

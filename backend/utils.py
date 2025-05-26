@@ -1,6 +1,5 @@
 from transformers import BertTokenizer, BertModel
 import torch
-import numpy as np
 
 # Load pre-trained BERT model and tokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')

@@ -1,6 +1,5 @@
 import requests
 import json
-import re
 
 def get_ollama_response(prompt):
     """
