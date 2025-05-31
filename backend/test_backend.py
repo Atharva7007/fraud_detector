@@ -46,6 +46,7 @@ def test_bert_embedding():
     assert embedding is not None
     assert embedding.shape == (768,)  # BERT base uncased embedding size
 
+@pytest.mark.skipif(not os.getenv('OLLAMA_HOST'), reason="Ollama service not available")
 def test_ollama_response():
     """Test Ollama response generation"""
     prompt = "Test prompt for Ollama"
@@ -53,6 +54,7 @@ def test_ollama_response():
     assert response is not None
     assert isinstance(response, str)
 
+@pytest.mark.skipif(not os.getenv('MONGODB_URI'), reason="MongoDB URI not configured")
 def test_mongodb_connection():
     """Test MongoDB connection"""
     client = get_mongo_client()
