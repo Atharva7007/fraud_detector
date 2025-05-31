@@ -71,7 +71,6 @@ jobs:
       #     pip install flake8
       #     flake8 .
 
-      # (Optional) When you write tests, add:
-      # - name: Test backend
-      #   working-directory: ./backend
-      #   run: pytest
+      - name: Test backend
+        working-directory: ./backend
+        run: pytest
