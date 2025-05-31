@@ -48,7 +48,9 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10"]
-
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      MONGODB_DB_NAME: ${{ secrets.MONGODB_DB_NAME }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
